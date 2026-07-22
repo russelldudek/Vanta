@@ -1,0 +1,90 @@
+{
+  ".github/workflows/pages.yml": {
+    "sha256": "3b9fd93a03312d44deddbc5171254f405bfc87b1d48efbd621e07b47666877fe",
+    "bytes": 694
+  },
+  ".nojekyll": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "90-day-plan.html": {
+    "sha256": "6cbfc79b4e7461c29d42755bfbdb0aeabf3a0b96b50542017005ef0301d10789",
+    "bytes": 12934
+  },
+  "README.md": {
+    "sha256": "1995dec7b6cf4a088f52548aeed306f57316229a32bf039125ca105cc7c5bff8",
+    "bytes": 921
+  },
+  "app.js": {
+    "sha256": "7e380ea14100e434723c5492ede83b17de860df9978eb02c926b748427404e18",
+    "bytes": 4408
+  },
+  "artifact-manifest.md": {
+    "sha256": "90a8c47d59fdef8f5929dc416b963d44d44dc1e2780dbe3d2c40fe2a188f89bd",
+    "bytes": 643
+  },
+  "assets/brand/README.md": {
+    "sha256": "b41eb5c63746af02e3cfef6f6ab1d9964874980f1816aaa77eba602bb78f6ef4",
+    "bytes": 148
+  },
+  "brand-intelligence.md": {
+    "sha256": "e5f2de8264641ad6e79633993db0993f9b7a31b37324012d84ce48dbcbe12a1c",
+    "bytes": 3042
+  },
+  "brand-tokens.css": {
+    "sha256": "b692e97765a99c750f65b4b64650c9d332088560e66ee734044d15289d91b5c4",
+    "bytes": 1150
+  },
+  "campaign-audit.md": {
+    "sha256": "18a4631a0dcb1906a17c3b476a0c94e3a85744272eff1a972bf825d542c1abc0",
+    "bytes": 3981
+  },
+  "cover-letter.html": {
+    "sha256": "d266e454c5fc359884bf3d859875725499cecfed5cb391d4cbeeb4504eac83af",
+    "bytes": 3801
+  },
+  "docs/Russell-Dudek-Vanta-90-Day-Plan.pdf": {
+    "sha256": "906564ad910d4155baa0e1fbb1cf050d6bdb8bf859b0afb93c4b24cf8ddb8a9d",
+    "bytes": 10288
+  },
+  "docs/Russell-Dudek-Vanta-Cover-Letter.pdf": {
+    "sha256": "a76e3464864766227fe167e55dac792e6c214979c6214f786ed7e2089b5af8f8",
+    "bytes": 3820
+  },
+  "docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf": {
+    "sha256": "5c47a595b5d8bbdec3c82f997fecb3d9f1d422a433c45179e3b5af29cff5a205",
+    "bytes": 8370
+  },
+  "docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf": {
+    "sha256": "566409b4c05dd55f9242262ee120882c156ec75623980c3a7c7b25eda682a8f4",
+    "bytes": 4900
+  },
+  "docs/Russell-Dudek-Vanta-Resume.pdf": {
+    "sha256": "caf51f0122456d7c3e35c08a1a6f6e7358e80c577ffc48dbd78f01b4e0388da1",
+    "bytes": 8271
+  },
+  "index.html": {
+    "sha256": "85b0f34cc334d6589e8bfaed65e4e8300b1bed8185350ed285c14db495dea53d",
+    "bytes": 15822
+  },
+  "interview-brief.html": {
+    "sha256": "3587a2e65a2bc45c44e3d21633ed1f6add138d3757a3a4d7ae32830ddf2ac786",
+    "bytes": 10029
+  },
+  "people-automation-warranty.html": {
+    "sha256": "a546b5155d7a73a75aaee98538557dc91cf70323133c4b0c5cb0c45ff4c37a4e",
+    "bytes": 5424
+  },
+  "research-sources.md": {
+    "sha256": "b05b67147c8bffc3e86b8f20d295efca9b8e144479a7a42462416fe0c62e261f",
+    "bytes": 756
+  },
+  "resume.html": {
+    "sha256": "8c574e5a75b0775721a245f349c4d6216b7131b985d980f2ff22171747fe8df6",
+    "bytes": 10405
+  },
+  "styles.css": {
+    "sha256": "2cfe688e655fd7dea2da7d55b078cc4e486213702a99ae44e2792a585492b5bb",
+    "bytes": 17609
+  }
+}

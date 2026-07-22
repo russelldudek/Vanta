@@ -1,0 +1,21 @@
+/* Vanta campaign brand tokens.
+   Official/source-grounded: Vanta is a purple-first brand with serif/sans contrast, architectural cutouts, expressive and monolinear iconography.
+   Exact campaign hexes are source-sampled approximations from current official public pages; candidate-original accents are labeled. */
+:root{
+ --vanta-purple:#5b2ad1; /* source-sampled approximation */
+ --vanta-purple-deep:#24113f; /* source-sampled approximation */
+ --vanta-purple-ink:#160b25; /* source-sampled approximation */
+ --vanta-lilac:#e9defa; /* source-sampled approximation */
+ --vanta-cream:#fbf8f0; /* source-sampled approximation */
+ --vanta-green:#b9ee78; /* source-sampled approximation */
+ --vanta-yellow:#f7df5d; /* source-sampled approximation */
+ --vanta-blue:#7ab7ff; /* source-sampled approximation */
+ --campaign-coral:#ff7d71; /* candidate-original: exception / human-authority accent */
+ --ink:#17121f;
+ --muted:#665f6d;
+ --line:#d9d0e2;
+ --paper:#fffdfa;
+ --serif: Georgia, 'Times New Roman', serif;
+ --sans: 'Trebuchet MS', 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+ --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
