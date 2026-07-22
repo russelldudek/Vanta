@@ -1,0 +1,115 @@
+name: Assemble and publish candidate campaign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'campaign-source.b64.part*'
+      - '.github/workflows/bootstrap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: candidate-campaign-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release inputs
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Expand readable campaign source
+        shell: bash
+        run: |
+          cat campaign-source.b64.part* | base64 --decode | tar -xz
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install browser renderer
+        shell: bash
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.54.2
+          npx playwright install --with-deps chromium
+
+      - name: Generate printable PDFs
+        shell: bash
+        run: |
+          python3 -m http.server 8000 >/tmp/vanta-http.log 2>&1 &
+          echo $! >/tmp/vanta-http.pid
+          sleep 2
+          node scripts/generate-pdfs.mjs
+          kill "$(cat /tmp/vanta-http.pid)" || true
+
+      - name: Verify document contracts
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          test "$(pdfinfo docs/Russell-Dudek-Vanta-Resume.pdf | awk '/^Pages:/{print $2}')" = "2"
+          test "$(pdfinfo docs/Russell-Dudek-Vanta-Cover-Letter.pdf | awk '/^Pages:/{print $2}')" = "1"
+          test "$(pdfinfo docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf | awk '/^Pages:/{print $2}')" = "3"
+          test "$(pdfinfo docs/Russell-Dudek-Vanta-90-Day-Plan.pdf | awk '/^Pages:/{print $2}')" = "4"
+          test "$(pdfinfo docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf | awk '/^Pages:/{print $2}')" = "2"
+          for file in docs/*.pdf; do
+            pdfinfo "$file" | grep -q 'Page size:.*612 x 792 pts'
+          done
+
+      - name: Finalize release record
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          audit = Path('campaign-audit.md')
+          text = audit.read_text()
+          text = text.replace('- Main-branch publication: pending release commit', '- Main-branch publication: passed')
+          audit.write_text(text)
+          excluded = {'campaign-source.b64.part00','campaign-source.b64.part01','campaign-source.b64.part02','campaign-source.b64.part03','campaign-source.b64.part04','campaign-source.b64.part05','.github/workflows/bootstrap.yml','release-manifest.json'}
+          paths=[]
+          for p in Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts or 'node_modules' in p.parts:
+                  continue
+              if p.as_posix() in excluded or p.name in {'package.json','package-lock.json'}:
+                  continue
+              paths.append(p)
+          manifest={p.as_posix(): {'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size} for p in sorted(paths)}
+          Path('release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          PY
+          rm -f campaign-source.b64.part* .github/workflows/bootstrap.yml package.json package-lock.json
+          rm -rf node_modules
+
+      - name: Commit complete source and documents
+        shell: bash
+        run: |
+          git config user.name 'Russell Dudek campaign release'
+          git config user.email 'russelldudek@users.noreply.github.com'
+          git add -A
+          git commit -m 'Publish complete Vanta candidate campaign'
+          git push origin main
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+
+      - name: Deploy candidate vision
+        id: deployment
+        uses: actions/deploy-pages@v4
