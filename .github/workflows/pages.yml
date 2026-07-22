@@ -3,10 +3,15 @@ name: Publish candidate vision
 on:
   push:
     branches: [main]
+    paths:
+      - '*.html'
+      - 'styles.css'
+      - 'brand-tokens.css'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -23,12 +28,135 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install Chromium renderer
+        shell: bash
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.54.2
+          npx playwright install --with-deps chromium
+
+      - name: Generate PDFs from current HTML
+        shell: bash
+        run: |
+          python3 -m http.server 8000 >/tmp/vanta-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { mkdir } from 'node:fs/promises';
+
+          const jobs = [
+            ['resume.html', 'docs/Russell-Dudek-Vanta-Resume.pdf'],
+            ['cover-letter.html', 'docs/Russell-Dudek-Vanta-Cover-Letter.pdf'],
+            ['interview-brief.html', 'docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf'],
+            ['90-day-plan.html', 'docs/Russell-Dudek-Vanta-90-Day-Plan.pdf'],
+            ['people-automation-warranty.html', 'docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf'],
+          ];
+
+          await mkdir('docs', { recursive: true });
+          const browser = await chromium.launch({ headless: true });
+          try {
+            for (const [route, output] of jobs) {
+              const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+              await page.goto(`http://127.0.0.1:8000/${route}`, { waitUntil: 'networkidle' });
+              await page.emulateMedia({ media: 'print' });
+              await page.pdf({
+                path: output,
+                format: 'Letter',
+                printBackground: true,
+                preferCSSPageSize: true,
+                margin: { top: '0', right: '0', bottom: '0', left: '0' },
+              });
+              await page.close();
+            }
+          } finally {
+            await browser.close();
+          }
+          NODE
+
+      - name: Verify HTML-to-PDF parity contracts
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+
+          check_document() {
+            html="$1"
+            pdf="$2"
+            html_pages=$(grep -o 'class="[^"]*sheet[^"]*"' "$html" | wc -l | tr -d ' ')
+            pdf_pages=$(pdfinfo "$pdf" | awk '/^Pages:/{print $2}')
+            test "$html_pages" = "$pdf_pages"
+            pdfinfo "$pdf" | grep -q 'Page size:.*612 x 792 pts'
+          }
+
+          check_document resume.html docs/Russell-Dudek-Vanta-Resume.pdf
+          check_document cover-letter.html docs/Russell-Dudek-Vanta-Cover-Letter.pdf
+          check_document interview-brief.html docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf
+          check_document 90-day-plan.html docs/Russell-Dudek-Vanta-90-Day-Plan.pdf
+          check_document people-automation-warranty.html docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf
+
+          pdftotext docs/Russell-Dudek-Vanta-Resume.pdf - | grep -q 'Selected operating mechanisms'
+          pdftotext docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf - | grep -q 'Immediate contribution'
+          pdftotext docs/Russell-Dudek-Vanta-90-Day-Plan.pdf - | grep -q 'Working agreements to establish'
+          pdftotext docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf - | grep -q 'Maintenance review'
+
+      - name: Refresh release manifest
+        shell: bash
+        run: |
+          rm -rf node_modules package.json package-lock.json
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+
+          excluded = {'release-manifest.json'}
+          paths = []
+          for path in Path('.').rglob('*'):
+              if not path.is_file() or '.git' in path.parts:
+                  continue
+              if path.as_posix() in excluded:
+                  continue
+              paths.append(path)
+
+          manifest = {
+              path.as_posix(): {
+                  'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                  'bytes': path.stat().st_size,
+              }
+              for path in sorted(paths)
+          }
+          Path('release-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload static site
+
+      - name: Upload verified static site
         uses: actions/upload-pages-artifact@v4
         with:
           path: .
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Commit synchronized PDFs
+        if: always() && steps.deployment.outcome == 'success'
+        shell: bash
+        run: |
+          git config user.name 'Russell Dudek campaign release'
+          git config user.email 'russelldudek@users.noreply.github.com'
+          git add docs/*.pdf release-manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Synchronize downloadable PDFs with online documents'
+            git push origin main
+          fi
