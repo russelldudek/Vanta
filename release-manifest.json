@@ -1,7 +1,7 @@
 {
   ".github/workflows/pages.yml": {
-    "sha256": "3b9fd93a03312d44deddbc5171254f405bfc87b1d48efbd621e07b47666877fe",
-    "bytes": 694
+    "sha256": "a726d7e2a6e2b3f535ee38b7f60c68e2fb1d99e0f95aabd1c7eeb62644d0c926",
+    "bytes": 5684
   },
   ".nojekyll": {
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -44,24 +44,24 @@
     "bytes": 3801
   },
   "docs/Russell-Dudek-Vanta-90-Day-Plan.pdf": {
-    "sha256": "906564ad910d4155baa0e1fbb1cf050d6bdb8bf859b0afb93c4b24cf8ddb8a9d",
-    "bytes": 10288
+    "sha256": "70824e39fe0bb012de0f4a4d2dedcd6d2ebcf262dccfab7068a231dfd9f093d8",
+    "bytes": 160624
   },
   "docs/Russell-Dudek-Vanta-Cover-Letter.pdf": {
-    "sha256": "a76e3464864766227fe167e55dac792e6c214979c6214f786ed7e2089b5af8f8",
-    "bytes": 3820
+    "sha256": "81830da9e88bc0e89e05df30a22c1d6df3f4cf561c67376647c81f9b385b7f19",
+    "bytes": 57872
   },
   "docs/Russell-Dudek-Vanta-Interview-Thesis-Brief.pdf": {
-    "sha256": "5c47a595b5d8bbdec3c82f997fecb3d9f1d422a433c45179e3b5af29cff5a205",
-    "bytes": 8370
+    "sha256": "537ac0f9e3561d98965e638c6468b812797e881abef7772a56602f4fc04f56f0",
+    "bytes": 143586
   },
   "docs/Russell-Dudek-Vanta-People-Automation-Warranty.pdf": {
-    "sha256": "566409b4c05dd55f9242262ee120882c156ec75623980c3a7c7b25eda682a8f4",
-    "bytes": 4900
+    "sha256": "7f92867d57218dfca7a3876a57c98cc76eb1adb353e89f30631826f8d5afe38c",
+    "bytes": 125835
   },
   "docs/Russell-Dudek-Vanta-Resume.pdf": {
-    "sha256": "caf51f0122456d7c3e35c08a1a6f6e7358e80c577ffc48dbd78f01b4e0388da1",
-    "bytes": 8271
+    "sha256": "3b2ceb0c8b63d39545f0a74744cb80ee8cc00a0269840f53c1a9ad2849c2c026",
+    "bytes": 110633
   },
   "index.html": {
     "sha256": "85b0f34cc334d6589e8bfaed65e4e8300b1bed8185350ed285c14db495dea53d",
